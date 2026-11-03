@@ -1,5 +1,22 @@
 import type { ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Linking, Platform, Pressable, Share, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+
+/** Abre una web externa. En web se usa un enlace real para que funcione en cualquier navegador. */
+export const openExternal = (url: string) => Linking.openURL(url).catch(() => {});
+
+/** Copia un texto: portapapeles en web, menú de compartir en el móvil. */
+export async function copyText(text: string): Promise<boolean> {
+  if (Platform.OS === 'web') {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  await Share.share({ message: text }).catch(() => {});
+  return true;
+}
 
 import { CONDITIONS } from '@/lib/platforms';
 import { trustLevel } from '@/lib/scoring';
@@ -50,7 +67,10 @@ export function Button({
   variant = 'primary',
   disabled,
   style,
+  href,
 }: {
+  /** Enlace externo: en web se pinta como <a target=_blank> */
+  href?: string;
   label: string;
   onPress?: () => void;
   variant?: 'primary' | 'ghost';
@@ -59,9 +79,11 @@ export function Button({
 }) {
   const t = useTheme();
   const primary = variant === 'primary';
+  const web = Platform.OS === 'web' && href ? ({ href, hrefAttrs: { target: '_blank', rel: 'noopener' } } as object) : {};
   return (
     <Pressable
-      onPress={onPress}
+      {...web}
+      onPress={href && Platform.OS === 'web' ? onPress : href ? () => { openExternal(href); onPress?.(); } : onPress}
       disabled={disabled}
       accessibilityRole="button"
       style={({ pressed }) => [

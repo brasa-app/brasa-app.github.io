@@ -2,9 +2,9 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Linking, Pressable, ScrollView, Share, Text, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { Box, Button, Chip, ConditionBadge, Note, Sub, Title } from '@/components/ui';
+import { Box, Button, Chip, copyText, ConditionBadge, Note, Sub, Title } from '@/components/ui';
 import { estimateCondition, type ConditionEstimate } from '@/lib/ai';
 import { CATEGORIES, CONDITIONS, PLATFORMS, PLATFORMS_BY_CATEGORY, euros } from '@/lib/platforms';
 import { searchAll } from '@/lib/sources';
@@ -36,6 +36,7 @@ export default function Sell() {
   const [suggested, setSuggested] = useState<number | null>(null);
   const [step, setStep] = useState<'edit' | 'publish'>('edit');
   const [done, setDone] = useState<PlatformId[]>([]);
+  const [copied, setCopied] = useState<PlatformId | null>(null);
 
   useEffect(() => setSelected(PLATFORMS_BY_CATEGORY[cat]), [cat]);
 
@@ -88,14 +89,17 @@ export default function Sell() {
               {adaptText(p, data)}
             </Text>
             <View style={{ flexDirection: 'row', gap: 8 }}>
-              <Button style={{ flex: 1 }} variant="ghost" label="Copiar texto" onPress={() => Share.share({ message: adaptText(p, data) }).catch(() => {})} />
+              <Button
+                style={{ flex: 1 }}
+                variant="ghost"
+                label={copied === p ? 'Copiado ✓' : 'Copiar texto'}
+                onPress={async () => (await copyText(adaptText(p, data))) && setCopied(p)}
+              />
               <Button
                 style={{ flex: 1 }}
                 label={`Abrir ${PLATFORMS[p].name}`}
-                onPress={() => {
-                  Linking.openURL(PLATFORMS[p].sellUrl);
-                  setDone((d) => (d.includes(p) ? d : [...d, p]));
-                }}
+                href={PLATFORMS[p].sellUrl}
+                onPress={() => setDone((d) => (d.includes(p) ? d : [...d, p]))}
               />
             </View>
           </Box>

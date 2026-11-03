@@ -1,9 +1,9 @@
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { Linking, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { delivery } from '@/components/listing-card';
-import { Box, Button, ConditionBadge, Note, Sub, Title } from '@/components/ui';
+import { Box, Button, copyText, ConditionBadge, Note, Sub, Title } from '@/components/ui';
 import { CATEGORIES, CONDITIONS, PLATFORMS, euros } from '@/lib/platforms';
 import { trustChecks, trustLevel, trustScore } from '@/lib/scoring';
 import { getListing } from '@/lib/sources';
@@ -92,14 +92,14 @@ export default function ListingDetail() {
         )}
       </Box>
 
-      <Button label={`Ver en ${PLATFORMS[l.platform].name}`} onPress={() => Linking.openURL(l.url)} />
+      <Button label={`Ver en ${PLATFORMS[l.platform].name}`} href={l.url} />
       <View style={{ flexDirection: 'row', gap: 10 }}>
         <Button style={{ flex: 1 }} variant="ghost" label={fav ? '♥ En favoritos' : '♡ Favorito'} onPress={() => toggleFavorite(l.id)} />
         <Button
           style={{ flex: 1 }}
           variant="ghost"
           label="Compartir"
-          onPress={() => Share.share({ message: `${l.title} por ${euros(l.price)} en ${PLATFORMS[l.platform].name}: ${l.url}` }).catch(() => {})}
+          onPress={() => copyText(`${l.title} por ${euros(l.price)} en ${PLATFORMS[l.platform].name}: ${l.url}`)}
         />
       </View>
       <Sub>
