@@ -168,6 +168,10 @@ export default function ListingDetail() {
         )}
       </Box>
 
+      {l.example && (
+        <Note>Anuncio de ejemplo de la beta. Al pulsar "Ver en {PLATFORMS[l.platform].name}" te llevamos a la búsqueda de este producto en {PLATFORMS[l.platform].name}.</Note>
+      )}
+
       <Sub>
         La compra se hace en {PLATFORMS[l.platform].name}, con su pago protegido. Consejos: no pagues nunca por Bizum o
         transferencia fuera de la plataforma, y desconfía si te piden hablar por WhatsApp o te envían enlaces de pago.

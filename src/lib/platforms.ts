@@ -13,6 +13,21 @@ export const PLATFORMS: Record<PlatformId, { name: string; home: string; sellUrl
   brasa: { name: 'Brasa', home: '', sellUrl: '' },
 };
 
+/** Página de búsqueda de cada plataforma para un producto. */
+export function searchUrl(p: PlatformId, q: string): string {
+  const e = encodeURIComponent(q);
+  switch (p) {
+    case 'wallapop': return `https://es.wallapop.com/app/search?keywords=${e}`;
+    case 'vinted': return `https://www.vinted.es/catalog?search_text=${e}`;
+    case 'milanuncios': return `https://www.milanuncios.com/anuncios/?s=${e}`;
+    case 'ebay': return `https://www.ebay.es/sch/i.html?_nkw=${e}`;
+    case 'cochesnet': return `https://www.coches.net/segunda-mano/?KeyWords=${e}`;
+    case 'motosnet': return `https://motos.coches.net/segunda-mano/?KeyWords=${e}`;
+    case 'todocoleccion': return `https://www.todocoleccion.net/buscador?bu=${e}`;
+    default: return PLATFORMS[p].home;
+  }
+}
+
 export const CATEGORIES: Record<CategoryId, { name: string; emoji: string }> = {
   moviles: { name: 'Móviles', emoji: '📱' },
   consolas: { name: 'Videojuegos', emoji: '🎮' },

@@ -79,11 +79,16 @@ export function Button({
 }) {
   const t = useTheme();
   const primary = variant === 'primary';
-  const web = Platform.OS === 'web' && href ? ({ href, hrefAttrs: { target: '_blank', rel: 'noopener' } } as object) : {};
   return (
     <Pressable
-      {...web}
-      onPress={href && Platform.OS === 'web' ? onPress : href ? () => { openExternal(href); onPress?.(); } : onPress}
+      onPress={
+        href
+          ? () => {
+              openExternal(href);
+              onPress?.();
+            }
+          : onPress
+      }
       disabled={disabled}
       accessibilityRole="button"
       style={({ pressed }) => [

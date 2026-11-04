@@ -1,4 +1,4 @@
-import { PLATFORMS, PLATFORMS_BY_CATEGORY, CONDITIONS } from '../platforms';
+import { PLATFORMS_BY_CATEGORY, CONDITIONS, searchUrl } from '../platforms';
 import { tints } from '../theme';
 import type { CategoryId, Condition, Listing, PlatformId, Seller } from '../types';
 import { PRODUCT_IMAGES } from './product-images';
@@ -63,7 +63,8 @@ function make(
     title,
     category,
     platform,
-    url: `${PLATFORMS[platform].home}/search?q=${encodeURIComponent(title)}`,
+    url: searchUrl(platform, title),
+    example: true,
     price,
     marketPrice: market,
     condition,

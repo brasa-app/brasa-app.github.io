@@ -45,6 +45,8 @@ export type Listing = {
   imageUrl?: string | number;
   /** Color de fondo cuando no hay imagen */
   tint: string;
+  /** Anuncio de ejemplo (no existe en la plataforma) */
+  example?: boolean;
 };
 
 export type Filters = {
