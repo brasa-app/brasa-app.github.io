@@ -17,6 +17,10 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="listing/[id]" options={{ title: 'Anuncio', presentation: 'modal' }} />
           <Stack.Screen name="filters" options={{ title: 'Filtros', presentation: 'modal' }} />
+          <Stack.Screen name="community" options={{ title: 'Comunidad' }} />
+          <Stack.Screen name="share-deal" options={{ title: 'Compartir un chollo', presentation: 'modal' }} />
+          <Stack.Screen name="check" options={{ title: 'Comprobar anuncio' }} />
+          <Stack.Screen name="nearby" options={{ title: 'Cerca de ti' }} />
         </Stack>
       </ThemeProvider>
     </StoreProvider>

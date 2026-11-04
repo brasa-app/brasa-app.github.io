@@ -7,6 +7,7 @@ import { Box, Button, copyText, ConditionBadge, Note, Sub, Title } from '@/compo
 import { CATEGORIES, CONDITIONS, PLATFORMS, euros } from '@/lib/platforms';
 import { trustChecks, trustLevel, trustScore } from '@/lib/scoring';
 import { getListing } from '@/lib/sources';
+import { priceHistory, suggestedOffer } from '@/lib/pricing';
 import { useStore } from '@/lib/store';
 import { useTheme } from '@/lib/theme';
 
@@ -32,6 +33,10 @@ export default function ListingDetail() {
   const soft = { ok: t.okSoft, warn: t.warnSoft, bad: t.badSoft } as const;
   const fg = { ok: t.ok, warn: t.warn, bad: t.bad } as const;
   const fav = favorites.includes(l.id);
+  const offer = suggestedOffer(l);
+  const history = priceHistory(l);
+  const hMin = Math.min(...history.map((h) => h.price));
+  const hMax = Math.max(...history.map((h) => h.price));
   const minutes = Math.max(1, Math.round((Date.now() - l.publishedAt) / 60000));
 
   return (
@@ -90,6 +95,36 @@ export default function ListingDetail() {
             No recomendamos esta compra. El precio está muy por debajo del mercado y la cuenta no tiene historial.
           </Note>
         )}
+      </Box>
+
+      <Box>
+        <Text style={{ color: t.ink, fontWeight: '700', fontSize: 15 }}>Oferta sugerida: {euros(offer.offer)}</Text>
+        <Sub>{offer.note}</Sub>
+        <Button
+          variant="ghost"
+          label="Copiar mensaje para el vendedor"
+          onPress={() => copyText(`¡Hola! Me interesa tu ${l.title}. ¿Aceptarías ${euros(offer.offer)}? Puedo recogerlo o pagar el envío por la plataforma.`)}
+        />
+      </Box>
+
+      <Box>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <Text style={{ color: t.ink, fontWeight: '700', fontSize: 15 }}>Historial de precio</Text>
+          <Sub>Precio medio, 8 semanas</Sub>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 6, height: 110 }}>
+          {history.map((h, i) => (
+            <View key={h.week} style={{ flex: 1, alignItems: 'center', gap: 4, justifyContent: 'flex-end', height: '100%' }}>
+              <View style={{ width: '100%', borderRadius: 4, backgroundColor: i === history.length - 1 ? t.ember : t.surface2, height: `${Math.max(8, ((h.price - hMin) / (hMax - hMin || 1)) * 70 + 20)}%` }} />
+              <Text style={{ color: t.muted, fontSize: 9 }}>{h.week}</Text>
+            </View>
+          ))}
+        </View>
+        <Sub>
+          Hoy se vende de media por {euros(history[history.length - 1].price)}. Este anuncio está{' '}
+          {l.price < history[history.length - 1].price ? `${euros(history[history.length - 1].price - l.price)} por debajo` : `${euros(l.price - history[history.length - 1].price)} por encima`}.
+          {' '}Datos de ejemplo hasta tener histórico real.
+        </Sub>
       </Box>
 
       <Button label={`Ver en ${PLATFORMS[l.platform].name}`} href={l.url} />

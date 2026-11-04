@@ -63,3 +63,19 @@ export const defaultFilters: Filters = {
   delivery: 'any',
   category: 'all',
 };
+
+export type CommunityDeal = {
+  id: string;
+  title: string;
+  price: number;
+  url: string;
+  platform: PlatformId;
+  category: CategoryId;
+  author: string;
+  createdAt: number;
+  hot: number;
+  cold: number;
+  myVote?: 'hot' | 'cold';
+  /** true en los chollos de ejemplo de la beta */
+  example?: boolean;
+};

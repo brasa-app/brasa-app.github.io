@@ -3,7 +3,9 @@ import { FlatList, RefreshControl, Text, View } from 'react-native';
 
 import { ListingCard } from '@/components/listing-card';
 import { SearchHeader } from '@/components/search-header';
-import { Button, Note, Sub, Title } from '@/components/ui';
+import { Button, Chip, Note, Sub, Title } from '@/components/ui';
+import { router } from 'expo-router';
+import { ScrollView } from 'react-native';
 import { heatScore, isSafe, passesFilters } from '@/lib/scoring';
 import { trendingAll } from '@/lib/sources';
 import { useStore } from '@/lib/store';
@@ -53,6 +55,11 @@ export default function TopDeals() {
       ListHeaderComponent={
         <View style={{ gap: 14, marginBottom: 4 }}>
           <SearchHeader />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
+            <Chip label="🔥 Comunidad" onPress={() => router.push('/community')} />
+            <Chip label="📍 Cerca de ti" onPress={() => router.push('/nearby')} />
+            <Chip label="📸 ¿Es fiable este anuncio?" onPress={() => router.push('/check')} />
+          </ScrollView>
           <View>
             <Title>Está que arde 🔥</Title>
             <Sub>

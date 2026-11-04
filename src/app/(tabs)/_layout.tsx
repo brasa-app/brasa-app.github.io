@@ -2,6 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router/tabs';
 import type { ColorValue } from 'react-native';
 
+import { BrasaLogo } from '@/components/brasa-logo';
 import { useTheme } from '@/lib/theme';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -20,7 +21,7 @@ export default function TabsLayout() {
         headerStyle: { backgroundColor: t.surface },
         headerTitleStyle: { color: t.ink, fontWeight: '800' },
       }}>
-      <Tabs.Screen name="index" options={{ title: 'Ofertas TOP', headerTitle: 'brasa', tabBarIcon: icon('flame') }} />
+      <Tabs.Screen name="index" options={{ title: 'Ofertas TOP', headerTitle: () => <BrasaLogo />, tabBarIcon: icon('flame') }} />
       <Tabs.Screen name="sell" options={{ title: 'Añadir', headerTitle: 'Añadir producto', tabBarIcon: icon('add-circle') }} />
       <Tabs.Screen name="search" options={{ title: 'Buscador', tabBarIcon: icon('search') }} />
       <Tabs.Screen name="profile" options={{ title: 'Mi perfil', tabBarIcon: icon('person-circle-outline') }} />

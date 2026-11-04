@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-import { defaultFilters, type Filters, type PlatformId } from './types';
+import { defaultFilters, type CommunityDeal, type Filters, type PlatformId } from './types';
 
 export type LinkedAccount = { linked: boolean; stars: number; reviews: number };
 
@@ -20,6 +20,7 @@ type State = {
   profile: Profile;
   favorites: string[];
   savedSearches: SavedSearch[];
+  deals: CommunityDeal[];
 };
 
 const initial: State = {
@@ -38,6 +39,11 @@ const initial: State = {
   },
   favorites: [],
   savedSearches: [],
+  deals: [
+    { id: 'c1', title: 'Nintendo Switch OLED con Zelda', price: 210, url: 'https://es.wallapop.com', platform: 'wallapop', category: 'consolas', author: 'Marta', createdAt: Date.now() - 40 * 60000, hot: 184, cold: 12, example: true },
+    { id: 'c2', title: 'Chaqueta The North Face Nuptse talla M', price: 75, url: 'https://www.vinted.es', platform: 'vinted', category: 'moda', author: 'Dani', createdAt: Date.now() - 95 * 60000, hot: 121, cold: 9, example: true },
+    { id: 'c3', title: 'Thermomix TM6 con garantía', price: 650, url: 'https://www.milanuncios.com', platform: 'milanuncios', category: 'hogar', author: 'Rosa', createdAt: Date.now() - 180 * 60000, hot: 64, cold: 30, example: true },
+  ],
 };
 
 type Ctx = State & {
@@ -46,10 +52,12 @@ type Ctx = State & {
   toggleFavorite: (id: string) => void;
   saveSearch: (s: SavedSearch) => void;
   removeSearch: (query: string) => void;
+  addDeal: (d: Omit<CommunityDeal, 'id' | 'createdAt' | 'hot' | 'cold'>) => void;
+  vote: (id: string, v: 'hot' | 'cold') => void;
 };
 
 const StoreContext = createContext<Ctx | null>(null);
-const KEY = 'brasa-state-v1';
+const KEY = 'brasa-state-v2';
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(initial);
@@ -78,6 +86,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     saveSearch: (q) =>
       setState((s) => ({ ...s, savedSearches: [...s.savedSearches.filter((x) => x.query !== q.query), q] })),
     removeSearch: (query) => setState((s) => ({ ...s, savedSearches: s.savedSearches.filter((x) => x.query !== query) })),
+    addDeal: (d) =>
+      setState((s) => ({ ...s, deals: [{ ...d, id: `u${Date.now()}`, createdAt: Date.now(), hot: 1, cold: 0, myVote: 'hot' }, ...s.deals] })),
+    vote: (id, v) =>
+      setState((s) => ({
+        ...s,
+        deals: s.deals.map((d) => {
+          if (d.id !== id) return d;
+          const undo = d.myVote === v;
+          const n = { ...d, hot: d.hot - (d.myVote === 'hot' ? 1 : 0), cold: d.cold - (d.myVote === 'cold' ? 1 : 0) };
+          if (undo) return { ...n, myVote: undefined };
+          return { ...n, [v]: n[v] + 1, myVote: v };
+        }),
+      })),
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
