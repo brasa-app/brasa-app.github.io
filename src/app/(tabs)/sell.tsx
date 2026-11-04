@@ -117,25 +117,19 @@ export default function Sell() {
       </View>
 
       <Box>
-        <Text style={label}>¿Qué quieres vender?</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-          {(Object.keys(CATEGORIES) as CategoryId[]).map((k) => (
-            <Chip key={k} label={`${CATEGORIES[k].emoji} ${CATEGORIES[k].name}`} active={cat === k} onPress={() => setCat(k)} />
-          ))}
-        </View>
-
         <Text style={label}>Fotos</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
           {photos.map((u) => (
-            <Image key={u} source={u} style={{ width: 72, height: 72, borderRadius: 10 }} contentFit="cover" />
+            <Image key={u} source={u} style={{ width: 96, height: 96, borderRadius: 14 }} contentFit="cover" />
           ))}
           {photos.length < 8 && (
             <Pressable
               onPress={addPhotos}
               accessibilityRole="button"
               accessibilityLabel="Añadir fotos"
-              style={{ width: 72, height: 72, borderRadius: 10, borderWidth: 1, borderStyle: 'dashed', borderColor: t.muted, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ color: t.muted, fontSize: 26 }}>＋</Text>
+              style={{ width: 96, height: 96, borderRadius: 14, borderWidth: 2, borderStyle: 'dashed', borderColor: t.ember, backgroundColor: t.emberSoft, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ color: t.ember, fontSize: 28, fontWeight: '800' }}>＋</Text>
+              <Text style={{ color: t.ember, fontSize: 11, fontWeight: '700' }}>Añadir fotos</Text>
             </Pressable>
           )}
         </View>
@@ -145,6 +139,13 @@ export default function Sell() {
             🤖 Estado estimado por IA: {CONDITIONS[ai.condition].label} ({ai.confidence} % de confianza). {ai.reason}
           </Note>
         )}
+
+        <Text style={label}>¿Qué quieres vender?</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+          {(Object.keys(CATEGORIES) as CategoryId[]).map((k) => (
+            <Chip key={k} label={`${CATEGORIES[k].emoji} ${CATEGORIES[k].name}`} active={cat === k} onPress={() => setCat(k)} />
+          ))}
+        </View>
 
         <Text style={label}>Estado</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>

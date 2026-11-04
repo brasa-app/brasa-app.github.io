@@ -39,7 +39,7 @@ function PickCard({ l, label, color }: { l?: Listing; label: string; color: stri
 export default function Search() {
   const t = useTheme();
   const params = useLocalSearchParams<{ q?: string }>();
-  const { filters, savedSearches, saveSearch } = useStore();
+  const { filters, savedSearches, saveSearch, isHidden } = useStore();
   const [query, setQuery] = useState(params.q ?? '');
   const [submitted, setSubmitted] = useState(params.q ?? '');
   const [results, setResults] = useState<Listing[]>([]);
@@ -66,7 +66,7 @@ export default function Search() {
     return () => clearTimeout(id);
   }, [query]);
 
-  const visible = useMemo(() => results.filter((l) => passesFilters(l, filters)).sort((a, b) => a.price - b.price), [results, filters]);
+  const visible = useMemo(() => results.filter((l) => passesFilters(l, filters) && !isHidden(l)).sort((a, b) => a.price - b.price), [results, filters, isHidden]);
   const { cheapest, bestValue } = bestPicks(visible);
   const platforms = new Set(visible.map((l) => l.platform)).size;
   const saved = savedSearches.some((s) => s.query === submitted);

@@ -21,6 +21,8 @@ type State = {
   favorites: string[];
   savedSearches: SavedSearch[];
   deals: CommunityDeal[];
+  reported: string[];
+  blockedSellers: string[];
 };
 
 const initial: State = {
@@ -39,6 +41,8 @@ const initial: State = {
   },
   favorites: [],
   savedSearches: [],
+  reported: [],
+  blockedSellers: [],
   deals: [
     { id: 'c1', title: 'Nintendo Switch OLED con Zelda', price: 210, url: 'https://es.wallapop.com', platform: 'wallapop', category: 'consolas', author: 'Marta', createdAt: Date.now() - 40 * 60000, hot: 184, cold: 12, example: true },
     { id: 'c2', title: 'Chaqueta The North Face Nuptse talla M', price: 75, url: 'https://www.vinted.es', platform: 'vinted', category: 'moda', author: 'Dani', createdAt: Date.now() - 95 * 60000, hot: 121, cold: 9, example: true },
@@ -54,6 +58,10 @@ type Ctx = State & {
   removeSearch: (query: string) => void;
   addDeal: (d: Omit<CommunityDeal, 'id' | 'createdAt' | 'hot' | 'cold'>) => void;
   vote: (id: string, v: 'hot' | 'cold') => void;
+  report: (listingId: string) => void;
+  blockSeller: (name: string) => void;
+  isHidden: (l: { id: string; seller: { name: string } }) => boolean;
+  resetAll: () => void;
 };
 
 const StoreContext = createContext<Ctx | null>(null);
@@ -99,6 +107,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           return { ...n, [v]: n[v] + 1, myVote: v };
         }),
       })),
+    report: (id) => setState((s) => ({ ...s, reported: [...new Set([...s.reported, id])] })),
+    blockSeller: (name) => setState((s) => ({ ...s, blockedSellers: [...new Set([...s.blockedSellers, name])] })),
+    isHidden: (l) => state.reported.includes(l.id) || state.blockedSellers.includes(l.seller.name),
+    resetAll: () => {
+      AsyncStorage.removeItem(KEY).catch(() => {});
+      setState(initial);
+    },
   };
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

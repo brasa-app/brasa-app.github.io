@@ -20,7 +20,7 @@ export function BrasaLogo({ size = 26 }: { size?: number }) {
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }} accessibilityRole="header" accessibilityLabel="Brasa">
       <BrasaMark size={size * 1.05} />
       <Text style={{ fontSize: size, fontWeight: '900', letterSpacing: -size * 0.05, color: t.ink, includeFontPadding: false }}>
-        bras<Text style={{ color: t.ember }}>a</Text>
+        Bras<Text style={{ color: t.ember }}>a</Text>
       </Text>
     </View>
   );

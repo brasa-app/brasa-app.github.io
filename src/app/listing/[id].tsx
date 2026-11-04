@@ -2,11 +2,14 @@ import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { delivery } from '@/components/listing-card';
+import { ListingImage, delivery } from '@/components/listing-card';
 import { Box, Button, copyText, ConditionBadge, Note, Sub, Title } from '@/components/ui';
 import { CATEGORIES, CONDITIONS, PLATFORMS, euros } from '@/lib/platforms';
 import { trustChecks, trustLevel, trustScore } from '@/lib/scoring';
 import { getListing } from '@/lib/sources';
+import { useState } from 'react';
+import { router } from 'expo-router';
+import { Chip } from '@/components/ui';
 import { priceHistory, suggestedOffer } from '@/lib/pricing';
 import { useStore } from '@/lib/store';
 import { useTheme } from '@/lib/theme';
@@ -14,7 +17,9 @@ import { useTheme } from '@/lib/theme';
 export default function ListingDetail() {
   const t = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { favorites, toggleFavorite } = useStore();
+  const { favorites, toggleFavorite, report, blockSeller, reported } = useStore();
+  const [reporting, setReporting] = useState(false);
+  const [reason, setReason] = useState<string>();
   const l = getListing(id);
 
   if (!l) {
@@ -40,15 +45,10 @@ export default function ListingDetail() {
   const minutes = Math.max(1, Math.round((Date.now() - l.publishedAt) / 60000));
 
   return (
-    <ScrollView contentContainerStyle={{ padding: 16, gap: 16, maxWidth: 640, width: '100%', alignSelf: 'center' }}>
+    <View style={{ flex: 1 }}>
+    <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 110, gap: 16, maxWidth: 640, width: '100%', alignSelf: 'center' }}>
       <Stack.Screen options={{ title: PLATFORMS[l.platform].name }} />
-      <View style={[styles.hero, { backgroundColor: l.tint }]}>
-        {l.imageUrl ? (
-          <Image source={l.imageUrl} style={StyleSheet.absoluteFill} contentFit="cover" />
-        ) : (
-          <Text style={{ fontSize: 90 }}>{CATEGORIES[l.category].emoji}</Text>
-        )}
-      </View>
+      <ListingImage l={l} emojiSize={90} style={{ aspectRatio: 4 / 3, borderRadius: 16 }} />
       <View style={{ gap: 6 }}>
         <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
           <Title size={28}>{euros(l.price)}</Title>
@@ -127,7 +127,6 @@ export default function ListingDetail() {
         </Sub>
       </Box>
 
-      <Button label={`Ver en ${PLATFORMS[l.platform].name}`} href={l.url} />
       <View style={{ flexDirection: 'row', gap: 10 }}>
         <Button style={{ flex: 1 }} variant="ghost" label={fav ? '♥ En favoritos' : '♡ Favorito'} onPress={() => toggleFavorite(l.id)} />
         <Button
@@ -137,15 +136,56 @@ export default function ListingDetail() {
           onPress={() => copyText(`${l.title} por ${euros(l.price)} en ${PLATFORMS[l.platform].name}: ${l.url}`)}
         />
       </View>
+      <Box>
+        {reported.includes(l.id) ? (
+          <Sub>Gracias. Hemos recibido tu denuncia y ya no verás este anuncio.</Sub>
+        ) : !reporting ? (
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            <Button style={{ flex: 1 }} variant="ghost" label="🚩 Denunciar" onPress={() => setReporting(true)} />
+            <Button
+              style={{ flex: 1 }}
+              variant="ghost"
+              label={`Bloquear a ${l.seller.name}`}
+              onPress={() => {
+                blockSeller(l.seller.name);
+                router.back();
+              }}
+            />
+          </View>
+        ) : (
+          <View style={{ gap: 10 }}>
+            <Text style={{ color: t.ink, fontWeight: '700' }}>¿Qué pasa con este anuncio?</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+              {['Es una estafa', 'Precio o fotos falsos', 'Producto prohibido', 'Ofensivo', 'Otro motivo'].map((r) => (
+                <Chip key={r} label={r} active={reason === r} onPress={() => setReason(r)} />
+              ))}
+            </View>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Button style={{ flex: 1 }} variant="ghost" label="Cancelar" onPress={() => setReporting(false)} />
+              <Button style={{ flex: 1 }} label="Enviar denuncia" disabled={!reason} onPress={() => report(l.id)} />
+            </View>
+          </View>
+        )}
+      </Box>
+
       <Sub>
         La compra se hace en {PLATFORMS[l.platform].name}, con su pago protegido. Consejos: no pagues nunca por Bizum o
         transferencia fuera de la plataforma, y desconfía si te piden hablar por WhatsApp o te envían enlaces de pago.
       </Sub>
     </ScrollView>
+      <View style={[styles.bar, { backgroundColor: t.surface, borderTopColor: t.line }]}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: t.ink, fontSize: 22, fontWeight: '800' }}>{euros(l.price)}</Text>
+          <Text style={{ color: t.muted, fontSize: 12 }}>{delivery(l)}</Text>
+        </View>
+        <Button label={`Ver en ${PLATFORMS[l.platform].name}`} href={l.url} style={{ paddingHorizontal: 22 }} />
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  bar: { position: 'absolute', left: 0, right: 0, bottom: 0, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 20, borderTopWidth: 1 },
   hero: { aspectRatio: 16 / 10, borderRadius: 14, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   ic: { width: 20, height: 20, borderRadius: 10, textAlign: 'center', lineHeight: 20, fontSize: 12, fontWeight: '800', overflow: 'hidden' },
 });

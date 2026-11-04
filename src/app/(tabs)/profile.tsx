@@ -3,7 +3,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { Box, Button, Sub, Title } from '@/components/ui';
+import { Box, Button, Note, Sub, Title } from '@/components/ui';
+import { router } from 'expo-router';
 import { PLATFORMS } from '@/lib/platforms';
 import { useStore, type LinkedAccount } from '@/lib/store';
 import { useTheme } from '@/lib/theme';
@@ -11,7 +12,8 @@ import type { PlatformId } from '@/lib/types';
 
 export default function Profile() {
   const t = useTheme();
-  const { profile, setProfile, favorites, savedSearches, removeSearch } = useStore();
+  const { profile, setProfile, favorites, savedSearches, removeSearch, resetAll } = useStore();
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [editing, setEditing] = useState<PlatformId | null>(null);
   const [stars, setStars] = useState('');
   const [reviews, setReviews] = useState('');
@@ -123,6 +125,21 @@ export default function Profile() {
           <Sub>Crea una alerta desde el buscador y te avisaremos cuando salga un chollo.</Sub>
         )}
         <Sub>{favorites.length} anuncios en favoritos</Sub>
+      </Box>
+
+      <Box>
+        <Button variant="ghost" label="Privacidad y aviso legal" onPress={() => router.push('/legal')} />
+        {!confirmDelete ? (
+          <Button variant="ghost" label="Borrar mi cuenta y mis datos" onPress={() => setConfirmDelete(true)} />
+        ) : (
+          <View style={{ gap: 10 }}>
+            <Note tone="bad">Se borrarán tu perfil, favoritos, alertas y cuentas vinculadas. No se puede deshacer.</Note>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Button style={{ flex: 1 }} variant="ghost" label="Cancelar" onPress={() => setConfirmDelete(false)} />
+              <Button style={{ flex: 1 }} label="Borrar todo" onPress={() => { resetAll(); setConfirmDelete(false); }} />
+            </View>
+          </View>
+        )}
       </Box>
 
       <Title size={14}>Brasa · versión beta</Title>

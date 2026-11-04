@@ -41,7 +41,8 @@ export type Listing = {
   views: number;
   favorites: number;
   publishedAt: number;
-  imageUrl?: string;
+  /** URL de la foto, o imagen incluida en la app (require) */
+  imageUrl?: string | number;
   /** Color de fondo cuando no hay imagen */
   tint: string;
 };
@@ -76,6 +77,7 @@ export type CommunityDeal = {
   hot: number;
   cold: number;
   myVote?: 'hot' | 'cold';
+  imageUrl?: string;
   /** true en los chollos de ejemplo de la beta */
   example?: boolean;
 };

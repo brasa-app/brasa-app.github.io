@@ -1,6 +1,7 @@
 import { PLATFORMS, PLATFORMS_BY_CATEGORY, CONDITIONS } from '../platforms';
 import { tints } from '../theme';
 import type { CategoryId, Condition, Listing, PlatformId, Seller } from '../types';
+import { PRODUCT_IMAGES } from './product-images';
 import type { ListingSource } from './types';
 
 /** Datos de ejemplo para desarrollar la app sin depender de ninguna API. */
@@ -76,6 +77,7 @@ function make(
     favorites: Math.round(20 + rand() * 600),
     publishedAt: Date.now() - (o.minutesAgo ?? Math.round(1 + rand() * 90)) * 60000,
     tint: pick(tints),
+    imageUrl: PRODUCT_IMAGES[title],
   };
 }
 

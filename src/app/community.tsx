@@ -1,3 +1,4 @@
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { FlatList, Pressable, Text, View } from 'react-native';
 
@@ -5,10 +6,8 @@ import { Box, Button, Sub, Title } from '@/components/ui';
 import { CATEGORIES, PLATFORMS, euros } from '@/lib/platforms';
 import { useStore } from '@/lib/store';
 import { useTheme } from '@/lib/theme';
-import type { CommunityDeal } from '@/lib/types';
+import { temperature } from '@/lib/community';
 
-/** Temperatura del chollo: votos netos, con menos peso cuanto más antiguo. */
-const temperature = (d: CommunityDeal) => Math.round((d.hot - d.cold) / Math.pow(1 + (Date.now() - d.createdAt) / 3_600_000, 0.4));
 
 export default function Community() {
   const t = useTheme();
@@ -43,6 +42,9 @@ export default function Community() {
                 style={{ padding: 4, borderRadius: 8, backgroundColor: d.myVote === 'cold' ? t.surface2 : 'transparent' }}>
                 <Text style={{ fontSize: 20 }}>❄️</Text>
               </Pressable>
+            </View>
+            <View style={{ width: 76, height: 76, borderRadius: 10, backgroundColor: t.surface2, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+              {d.imageUrl ? <Image source={d.imageUrl} style={{ width: 76, height: 76 }} contentFit="cover" /> : <Text style={{ fontSize: 34 }}>{CATEGORIES[d.category].emoji}</Text>}
             </View>
             <View style={{ flex: 1, gap: 4, minWidth: 0 }}>
               <Text style={{ color: t.ink, fontWeight: '700' }} numberOfLines={2}>

@@ -1,4 +1,7 @@
+import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
+import { Pressable } from 'react-native';
 import { useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 
@@ -30,6 +33,12 @@ export default function ShareDeal() {
   const [price, setPrice] = useState('');
   const [platform, setPlatform] = useState<PlatformId>('wallapop');
   const [category, setCategory] = useState<CategoryId>('consolas');
+  const [photo, setPhoto] = useState<string>();
+
+  async function pickPhoto() {
+    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.6 });
+    if (!res.canceled) setPhoto(res.assets[0].uri);
+  }
 
   const validUrl = /^https?:\/\/\S+\.\S+/.test(url.trim());
   const ok = validUrl && title.trim().length > 3 && Number(price) > 0;
@@ -53,6 +62,11 @@ export default function ShareDeal() {
         style={input}
       />
       {url.length > 5 && !validUrl && <Sub>Pega el enlace completo, empezando por https://</Sub>}
+      <Text style={label}>Foto</Text>
+      <Pressable onPress={pickPhoto} accessibilityRole="button" accessibilityLabel="Añadir foto"
+        style={{ width: 110, height: 110, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: t.muted, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+        {photo ? <Image source={photo} style={{ width: 110, height: 110 }} contentFit="cover" /> : <Text style={{ color: t.muted, fontSize: 13, textAlign: 'center' }}>＋{'\n'}Captura o foto</Text>}
+      </Pressable>
       <Text style={label}>¿Qué es?</Text>
       <TextInput value={title} onChangeText={setTitle} placeholder="Ej.: PS5 con 2 mandos" placeholderTextColor={t.muted} style={input} />
       <Text style={label}>Precio</Text>
@@ -71,7 +85,7 @@ export default function ShareDeal() {
         label="Compartir chollo"
         disabled={!ok}
         onPress={() => {
-          addDeal({ title: title.trim(), price: Number(price), url: url.trim(), platform, category, author: profile.name || 'Anónimo' });
+          addDeal({ title: title.trim(), price: Number(price), url: url.trim(), platform, category, author: profile.name || 'Anónimo', imageUrl: photo });
           router.back();
         }}
       />
