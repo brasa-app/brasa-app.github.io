@@ -8,6 +8,8 @@ python3 - <<'PY'
 p = 'dist/index.html'
 s = open(p, encoding='utf-8').read()
 head = '''
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="theme-color" content="#e8501f" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -19,7 +21,7 @@ head = '''
 s = s.replace('<html lang="en">', '<html lang="es">')
 s = s.replace('initial-scale=1, shrink-to-fit=no', 'initial-scale=1, viewport-fit=cover')
 s = s.replace('</head>', head + '</head>', 1)
-s = s.replace('</body>', "<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js')</script>\n</body>", 1)
+s = s.replace('</body>', '<script src="/sw-register.js"></script>\n</body>', 1)
 open(p, 'w', encoding='utf-8').write(s)
 PY
 # GitHub Pages: cualquier ruta sirve la app (enlaces directos a /brasa/search, etc.)

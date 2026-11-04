@@ -2,7 +2,20 @@ import type { ReactNode } from 'react';
 import { Linking, Platform, Pressable, Share, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
 /** Abre una web externa. En web se usa un enlace real para que funcione en cualquier navegador. */
-export const openExternal = (url: string) => Linking.openURL(url).catch(() => {});
+export const openExternal = (url: string) => {
+  if (!isSafeUrl(url)) return;
+  Linking.openURL(url).catch(() => {});
+};
+
+/** Solo se abren enlaces https. Bloquea javascript:, data:, file: y similares. */
+export function isSafeUrl(url: string): boolean {
+  try {
+    const u = new URL(url.trim());
+    return u.protocol === 'https:' && !u.username && !u.password && u.hostname.includes('.');
+  } catch {
+    return false;
+  }
+}
 
 /** Copia un texto: portapapeles en web, menú de compartir en el móvil. */
 export async function copyText(text: string): Promise<boolean> {

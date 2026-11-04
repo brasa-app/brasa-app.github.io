@@ -5,7 +5,7 @@ import { Pressable } from 'react-native';
 import { useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
 
-import { Button, Chip, Sub } from '@/components/ui';
+import { Button, Chip, Sub, isSafeUrl } from '@/components/ui';
 import { CATEGORIES, PLATFORMS } from '@/lib/platforms';
 import { useStore } from '@/lib/store';
 import { useTheme } from '@/lib/theme';
@@ -40,7 +40,8 @@ export default function ShareDeal() {
     if (!res.canceled) setPhoto(res.assets[0].uri);
   }
 
-  const validUrl = /^https?:\/\/\S+\.\S+/.test(url.trim());
+  const validUrl = isSafeUrl(url);
+  const known = Boolean(platformFromUrl(url));
   const ok = validUrl && title.trim().length > 3 && Number(price) > 0;
   const input = { borderWidth: 1, borderColor: t.line, backgroundColor: t.surface2, borderRadius: 10, padding: 12, color: t.ink, fontSize: 15 };
   const label = { color: t.ink, fontWeight: '600' as const, fontSize: 14 };
@@ -62,6 +63,7 @@ export default function ShareDeal() {
         style={input}
       />
       {url.length > 5 && !validUrl && <Sub>Pega el enlace completo, empezando por https://</Sub>}
+      {validUrl && !known && <Sub>⚠️ Este enlace no es de una plataforma conocida. Asegúrate de que es seguro.</Sub>}
       <Text style={label}>Foto</Text>
       <Pressable onPress={pickPhoto} accessibilityRole="button" accessibilityLabel="Añadir foto"
         style={{ width: 110, height: 110, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: t.muted, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
@@ -85,7 +87,7 @@ export default function ShareDeal() {
         label="Compartir chollo"
         disabled={!ok}
         onPress={() => {
-          addDeal({ title: title.trim(), price: Number(price), url: url.trim(), platform, category, author: profile.name || 'Anónimo', imageUrl: photo });
+          addDeal({ title: title.trim().slice(0, 120), price: Number(price), url: url.trim(), platform, category, author: profile.name || 'Anónimo', imageUrl: photo });
           router.back();
         }}
       />

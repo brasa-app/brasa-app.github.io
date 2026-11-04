@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { loadEncrypted, saveEncrypted, wipeEncrypted } from './secure-storage';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 import { defaultFilters, type CommunityDeal, type Filters, type Listing, type PlatformId } from './types';
@@ -73,21 +75,26 @@ type Ctx = State & {
 };
 
 const StoreContext = createContext<Ctx | null>(null);
-const KEY = 'brasa-state-v3';
+const KEY = 'brasa-secure-v1';
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(initial);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem(KEY)
-      .then((raw) => raw && setState({ ...initial, ...JSON.parse(raw) }))
+    loadEncrypted<State>(KEY)
+      .then((saved) => saved && setState({ ...initial, ...saved }))
       .catch(() => {})
       .finally(() => setLoaded(true));
+    // Borra datos de versiones antiguas que se guardaban sin cifrar
+    ['brasa-state-v1', 'brasa-state-v2', 'brasa-state-v3'].forEach((k) => AsyncStorage.removeItem(k).catch(() => {}));
   }, []);
 
   useEffect(() => {
-    if (loaded) AsyncStorage.setItem(KEY, JSON.stringify(state)).catch(() => {});
+    if (!loaded) return;
+    // Pequeña espera para no cifrar en cada pulsación de tecla
+    const id = setTimeout(() => saveEncrypted(KEY, state).catch(() => {}), 400);
+    return () => clearTimeout(id);
   }, [state, loaded]);
 
   const value: Ctx = {
@@ -124,7 +131,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     blockSeller: (name) => setState((s) => ({ ...s, blockedSellers: [...new Set([...s.blockedSellers, name])] })),
     isHidden: (l) => state.reported.includes(l.id) || state.blockedSellers.includes(l.seller.name),
     resetAll: () => {
-      AsyncStorage.removeItem(KEY).catch(() => {});
+      wipeEncrypted(KEY).catch(() => {});
       setState(initial);
     },
   };

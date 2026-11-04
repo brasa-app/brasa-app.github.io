@@ -3,7 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { Box, Button, Note, Sub, Title } from '@/components/ui';
+import { Box, Button, Note, Sub, Title, copyText } from '@/components/ui';
 import { router } from 'expo-router';
 import { PLATFORMS } from '@/lib/platforms';
 import { useStore, type LinkedAccount } from '@/lib/store';
@@ -14,6 +14,10 @@ export default function Profile() {
   const t = useTheme();
   const { profile, setProfile, favorites, savedSearches, removeSearch, resetAll } = useStore();
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [exported, setExported] = useState(false);
+  const store = useStore();
+  const exportData = () =>
+    JSON.stringify({ perfil: store.profile, ciudad: store.city, favoritos: store.favorites, alertas: store.savedSearches, chollosCompartidos: store.deals.filter((d) => !d.example) }, null, 2);
   const [editing, setEditing] = useState<PlatformId | null>(null);
   const [stars, setStars] = useState('');
   const [reviews, setReviews] = useState('');
@@ -69,13 +73,14 @@ export default function Profile() {
       <Box>
         <Text style={label}>Descripción</Text>
         <TextInput value={profile.bio} onChangeText={(bio) => setProfile({ ...profile, bio })} multiline style={[input, { minHeight: 70, textAlignVertical: 'top' }]} />
-        <Text style={label}>Dirección</Text>
-        <TextInput value={profile.address} onChangeText={(address) => setProfile({ ...profile, address })} placeholder="Calle, número, código postal y ciudad" placeholderTextColor={t.muted} style={input} />
-        <Sub>Solo la usamos para calcular distancias y envíos. No se muestra a nadie.</Sub>
+        <Text style={label}>Código postal</Text>
+        <TextInput value={profile.address} onChangeText={(v) => setProfile({ ...profile, address: v.replace(/\D/g, '').slice(0, 5) })} placeholder="28013" placeholderTextColor={t.muted} keyboardType="number-pad" style={input} />
+        <Sub>🔒 Solo pedimos tu código postal, nunca tu dirección exacta. Se guarda cifrado en tu dispositivo y no se muestra a nadie.</Sub>
       </Box>
 
       <Box>
         <Text style={label}>Cuentas vinculadas</Text>
+        <Note>🔒 Brasa nunca te pedirá la contraseña de Wallapop, Vinted ni ninguna otra app. Si alguien te la pide en nombre de Brasa, es una estafa.</Note>
         <Sub>Añade tu valoración en cada app para mostrar tu media como vendedor. La verificaremos cuando la plataforma lo permita.</Sub>
         {accounts.map(([p, a]) => (
           <View key={p} style={{ gap: 8, padding: 10, borderRadius: 12, borderWidth: 1, borderColor: t.line }}>
@@ -128,6 +133,9 @@ export default function Profile() {
       </Box>
 
       <Box>
+        <Text style={label}>Privacidad</Text>
+        <Sub>🔒 Tus datos están cifrados en tu dispositivo. No usamos analíticas, publicidad ni rastreadores, y no vendemos datos a nadie.</Sub>
+        <Button variant="ghost" label={exported ? 'Datos copiados ✓' : 'Copiar mis datos (exportar)'} onPress={async () => setExported(await copyText(exportData()))} />
         <Button variant="ghost" label="Privacidad y aviso legal" onPress={() => router.push('/legal')} />
         {!confirmDelete ? (
           <Button variant="ghost" label="Borrar mi cuenta y mis datos" onPress={() => setConfirmDelete(true)} />
