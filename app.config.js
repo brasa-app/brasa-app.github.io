@@ -1,5 +1,5 @@
-// Permite cambiar la ruta base de la web: /brasa en GitHub Pages, vacía para otras pruebas.
+// Permite cambiar la ruta base de la web: vacía para brasa-app.github.io.
 module.exports = ({ config }) => ({
   ...config,
-  experiments: { ...config.experiments, baseUrl: process.env.BRASA_BASE_URL ?? '/brasa' },
+  experiments: { ...config.experiments, baseUrl: process.env.BRASA_BASE_URL ?? '' },
 });
