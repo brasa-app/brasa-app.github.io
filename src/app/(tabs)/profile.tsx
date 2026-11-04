@@ -124,7 +124,7 @@ export default function Profile() {
         ) : (
           <Sub>Crea una alerta desde el buscador y te avisaremos cuando salga un chollo.</Sub>
         )}
-        <Sub>{favorites.length} anuncios en favoritos</Sub>
+        <Button variant="ghost" label={`♥ Ver mis ${favorites.length} favoritos`} onPress={() => router.push('/favorites')} />
       </Box>
 
       <Box>

@@ -20,7 +20,8 @@ export default function ListingDetail() {
   const { favorites, toggleFavorite, report, blockSeller, reported } = useStore();
   const [reporting, setReporting] = useState(false);
   const [reason, setReason] = useState<string>();
-  const l = getListing(id);
+  const { favoriteItems } = useStore();
+  const l = getListing(id) ?? favoriteItems[id];
 
   if (!l) {
     return (
@@ -128,7 +129,7 @@ export default function ListingDetail() {
       </Box>
 
       <View style={{ flexDirection: 'row', gap: 10 }}>
-        <Button style={{ flex: 1 }} variant="ghost" label={fav ? '♥ En favoritos' : '♡ Favorito'} onPress={() => toggleFavorite(l.id)} />
+        <Button style={{ flex: 1 }} variant="ghost" label={fav ? '♥ En favoritos' : '♡ Favorito'} onPress={() => toggleFavorite(l)} />
         <Button
           style={{ flex: 1 }}
           variant="ghost"

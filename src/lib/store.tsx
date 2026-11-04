@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-import { defaultFilters, type CommunityDeal, type Filters, type PlatformId } from './types';
+import { defaultFilters, type CommunityDeal, type Filters, type Listing, type PlatformId } from './types';
 
 export type LinkedAccount = { linked: boolean; stars: number; reviews: number };
 
@@ -19,6 +19,9 @@ type State = {
   filters: Filters;
   profile: Profile;
   favorites: string[];
+  favoriteItems: Record<string, Listing>;
+  onboarded: boolean;
+  city: string;
   savedSearches: SavedSearch[];
   deals: CommunityDeal[];
   reported: string[];
@@ -40,6 +43,9 @@ const initial: State = {
     },
   },
   favorites: [],
+  favoriteItems: {},
+  onboarded: false,
+  city: 'Madrid',
   savedSearches: [],
   reported: [],
   blockedSellers: [],
@@ -53,7 +59,9 @@ const initial: State = {
 type Ctx = State & {
   setFilters: (f: Filters) => void;
   setProfile: (p: Profile) => void;
-  toggleFavorite: (id: string) => void;
+  toggleFavorite: (l: Listing) => void;
+  finishOnboarding: (city: string) => void;
+  loaded: boolean;
   saveSearch: (s: SavedSearch) => void;
   removeSearch: (query: string) => void;
   addDeal: (d: Omit<CommunityDeal, 'id' | 'createdAt' | 'hot' | 'cold'>) => void;
@@ -65,7 +73,7 @@ type Ctx = State & {
 };
 
 const StoreContext = createContext<Ctx | null>(null);
-const KEY = 'brasa-state-v2';
+const KEY = 'brasa-state-v3';
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(initial);
@@ -86,11 +94,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     ...state,
     setFilters: (filters) => setState((s) => ({ ...s, filters })),
     setProfile: (profile) => setState((s) => ({ ...s, profile })),
-    toggleFavorite: (id) =>
-      setState((s) => ({
-        ...s,
-        favorites: s.favorites.includes(id) ? s.favorites.filter((f) => f !== id) : [...s.favorites, id],
-      })),
+    loaded,
+    finishOnboarding: (city) => setState((s) => ({ ...s, onboarded: true, city })),
+    toggleFavorite: (l) =>
+      setState((s) => {
+        const on = s.favorites.includes(l.id);
+        const items = { ...s.favoriteItems };
+        if (on) delete items[l.id];
+        else items[l.id] = l;
+        return { ...s, favorites: on ? s.favorites.filter((f) => f !== l.id) : [...s.favorites, l.id], favoriteItems: items };
+      }),
     saveSearch: (q) =>
       setState((s) => ({ ...s, savedSearches: [...s.savedSearches.filter((x) => x.query !== q.query), q] })),
     removeSearch: (query) => setState((s) => ({ ...s, savedSearches: s.savedSearches.filter((x) => x.query !== query) })),

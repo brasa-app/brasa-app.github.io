@@ -27,13 +27,14 @@ export function ListingImage({ l, emojiSize = 54, style }: { l: Listing; emojiSi
   );
 }
 
-function FavButton({ id }: { id: string }) {
+function FavButton({ l }: { l: Listing }) {
+  const id = l.id;
   const t = useTheme();
   const { favorites, toggleFavorite } = useStore();
   const on = favorites.includes(id);
   return (
     <Pressable
-      onPress={() => toggleFavorite(id)}
+      onPress={() => toggleFavorite(l)}
       hitSlop={8}
       accessibilityRole="button"
       accessibilityLabel={on ? 'Quitar de favoritos' : 'Añadir a favoritos'}
@@ -55,7 +56,7 @@ export function ListingCard({ l, showHeat }: { l: Listing; showHeat?: boolean })
         {showHeat && (
           <Text style={[styles.heat, { backgroundColor: t.ember, color: t.emberInk }]}>🔥 {heatScore(l)}</Text>
         )}
-        <FavButton id={l.id} />
+        <FavButton l={l} />
         <Text style={[styles.plat, { backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff' }]}>{PLATFORMS[l.platform].name}</Text>
       </View>
       <View style={{ paddingTop: 8, paddingHorizontal: 2, gap: 2 }}>

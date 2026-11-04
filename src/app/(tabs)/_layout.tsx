@@ -33,7 +33,7 @@ export default function TabsLayout() {
           title: 'Ofertas TOP',
           headerTitle: () => <BrasaLogo />,
           headerRight: () => (
-            <Pressable onPress={() => router.navigate('/profile')} accessibilityLabel="Favoritos y alertas" style={{ paddingHorizontal: 16 }}>
+            <Pressable onPress={() => router.push('/favorites')} accessibilityLabel="Favoritos y alertas" style={{ paddingHorizontal: 16 }}>
               <Ionicons name="notifications-outline" size={24} color={t.ink} />
             </Pressable>
           ),

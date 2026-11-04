@@ -35,7 +35,11 @@ function Shortcut({ icon, title, sub, onPress, color }: { icon: IconName; title:
 
 export default function TopDeals() {
   const t = useTheme();
-  const { filters, setFilters, deals: community, isHidden } = useStore();
+  const { filters, setFilters, deals: community, isHidden, loaded, onboarded } = useStore();
+
+  useEffect(() => {
+    if (loaded && !onboarded) router.push('/welcome');
+  }, [loaded, onboarded]);
   const [all, setAll] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatedAt, setUpdatedAt] = useState(Date.now());

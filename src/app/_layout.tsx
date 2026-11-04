@@ -22,6 +22,8 @@ export default function RootLayout() {
           <Stack.Screen name="check" options={{ title: 'Comprobar anuncio' }} />
           <Stack.Screen name="nearby" options={{ title: 'Cerca de ti' }} />
           <Stack.Screen name="legal" options={{ title: 'Privacidad y aviso legal' }} />
+          <Stack.Screen name="favorites" options={{ title: 'Favoritos y alertas' }} />
+          <Stack.Screen name="welcome" options={{ headerShown: false, presentation: 'modal' }} />
         </Stack>
       </ThemeProvider>
     </StoreProvider>
