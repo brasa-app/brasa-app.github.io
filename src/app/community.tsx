@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { FlatList, Pressable, Text, View } from 'react-native';
@@ -35,20 +36,20 @@ export default function Community() {
             <View style={{ alignItems: 'center', gap: 4, width: 56 }}>
               <Pressable onPress={() => vote(d.id, 'hot')} accessibilityLabel="Votar caliente"
                 style={{ padding: 4, borderRadius: 8, backgroundColor: d.myVote === 'hot' ? t.emberSoft : 'transparent' }}>
-                <Text style={{ fontSize: 20 }}>🔥</Text>
+                <Ionicons name="arrow-up" size={20} color={t.ember} />
               </Pressable>
               <Text style={{ color: hotColor, fontWeight: '800', fontSize: 16 }}>{temp}°</Text>
               <Pressable onPress={() => vote(d.id, 'cold')} accessibilityLabel="Votar frío"
                 style={{ padding: 4, borderRadius: 8, backgroundColor: d.myVote === 'cold' ? t.surface2 : 'transparent' }}>
-                <Text style={{ fontSize: 20 }}>❄️</Text>
+                <Ionicons name="arrow-down" size={20} color={t.muted} />
               </Pressable>
             </View>
             <View style={{ width: 76, height: 76, borderRadius: 10, backgroundColor: t.surface2, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-              {d.imageUrl ? <Image source={d.imageUrl} style={{ width: 76, height: 76 }} contentFit="cover" /> : <Text style={{ fontSize: 34 }}>{CATEGORIES[d.category].emoji}</Text>}
+              {d.imageUrl ? <Image source={d.imageUrl} style={{ width: 76, height: 76 }} contentFit="cover" /> : <Ionicons name={CATEGORIES[d.category].icon as never} size={28} color={t.muted} />}
             </View>
             <View style={{ flex: 1, gap: 4, minWidth: 0 }}>
               <Text style={{ color: t.ink, fontWeight: '700' }} numberOfLines={2}>
-                {CATEGORIES[d.category].emoji} {d.title}
+                {d.title}
               </Text>
               <Text style={{ color: t.ink, fontSize: 20, fontWeight: '800' }}>{euros(d.price)}</Text>
               <Sub>

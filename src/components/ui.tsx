@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import type { ReactNode } from 'react';
 import { Linking, Platform, Pressable, Share, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
@@ -33,18 +34,21 @@ export async function copyText(text: string): Promise<boolean> {
 
 import { CONDITIONS } from '@/lib/platforms';
 import { trustLevel } from '@/lib/scoring';
-import { radius, useTheme } from '@/lib/theme';
+import { font, radius, useTheme } from '@/lib/theme';
+
+export type IconName = React.ComponentProps<typeof Ionicons>['name'];
 import type { Condition } from '@/lib/types';
 
-export function Chip({ label, active, onPress }: { label: string; active?: boolean; onPress?: () => void }) {
+export function Chip({ label, active, onPress, icon }: { label: string; active?: boolean; onPress?: () => void; icon?: IconName }) {
   const t = useTheme();
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={{ selected: active }}
-      style={[styles.chip, { borderColor: active ? t.ink : t.line, backgroundColor: active ? t.ink : t.surface }]}>
-      <Text style={{ color: active ? t.bg : t.ink, fontSize: 13, fontWeight: '500' }}>{label}</Text>
+      style={({ pressed }) => [styles.chip, { borderColor: active ? t.ink : t.line, backgroundColor: active ? t.ink : t.bg, opacity: pressed ? 0.7 : 1 }]}>
+      {icon && <Ionicons name={icon} size={14} color={active ? t.bg : t.ink} />}
+      <Text style={{ color: active ? t.bg : t.ink, fontSize: 13, fontWeight: '600' }}>{label}</Text>
     </Pressable>
   );
 }
@@ -71,7 +75,12 @@ export function ConditionBadge({ condition, byAI }: { condition: Condition; byAI
 export function TrustPill({ score }: { score: number }) {
   const t = useTheme();
   const color = { ok: t.ok, warn: t.warn, bad: t.bad }[trustLevel(score)];
-  return <Text style={{ color, fontWeight: '700', fontSize: 12 }}>🛡 {score}</Text>;
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+      <Ionicons name="shield-checkmark" size={12} color={color} />
+      <Text style={{ color, fontWeight: '700', fontSize: 12 }}>{score}</Text>
+    </View>
+  );
 }
 
 export function Button({
@@ -106,7 +115,8 @@ export function Button({
       accessibilityRole="button"
       style={({ pressed }) => [
         styles.btn,
-        { backgroundColor: primary ? t.ember : t.surface2, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
+        primary ? { backgroundColor: t.ember } : { backgroundColor: t.bg, borderWidth: 1, borderColor: t.line },
+        { opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
         style,
       ]}>
       <Text style={{ color: primary ? t.emberInk : t.ink, fontWeight: '700', fontSize: 15 }}>{label}</Text>
@@ -116,12 +126,30 @@ export function Button({
 
 export function Box({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   const t = useTheme();
-  return <View style={[styles.box, { backgroundColor: t.surface, borderColor: t.line }, style]}>{children}</View>;
+  return <View style={[styles.box, { borderColor: t.line }, style]}>{children}</View>;
 }
 
 export function Title({ children, size = 26 }: { children: ReactNode; size?: number }) {
   const t = useTheme();
-  return <Text style={{ color: t.ink, fontSize: size, fontWeight: '800', letterSpacing: -0.3 }}>{children}</Text>;
+  return <Text style={{ color: t.ink, fontSize: size, fontFamily: font.heavy, fontWeight: '800', letterSpacing: -size * 0.02 }}>{children}</Text>;
+}
+
+/** Cabecera de sección: etiqueta pequeña en mayúsculas, titular y acción opcional a la derecha. */
+export function Section({ kicker, title, action, onAction }: { kicker?: string; title: string; action?: string; onAction?: () => void }) {
+  const t = useTheme();
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12 }}>
+      <View style={{ flex: 1, gap: 2 }}>
+        {kicker && <Text style={{ color: t.ember, fontSize: 11, fontWeight: '700', letterSpacing: 1.2, textTransform: 'uppercase' }}>{kicker}</Text>}
+        <Title size={21}>{title}</Title>
+      </View>
+      {action && (
+        <Pressable onPress={onAction} hitSlop={8} accessibilityRole="button">
+          <Text style={{ color: t.ink, fontWeight: '600', fontSize: 13, textDecorationLine: 'underline' }}>{action}</Text>
+        </Pressable>
+      )}
+    </View>
+  );
 }
 
 export function Sub({ children }: { children: ReactNode }) {
@@ -132,16 +160,16 @@ export function Sub({ children }: { children: ReactNode }) {
 export function Note({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'bad' }) {
   const t = useTheme();
   return (
-    <View style={{ backgroundColor: tone === 'bad' ? t.badSoft : t.surface2, borderRadius: 10, padding: 12 }}>
-      <Text style={{ color: tone === 'bad' ? t.bad : t.muted, fontSize: 13, lineHeight: 18 }}>{children}</Text>
+    <View style={{ borderLeftWidth: 3, borderLeftColor: tone === 'bad' ? t.bad : t.ember, backgroundColor: tone === 'bad' ? t.badSoft : t.surface2, borderRadius: 4, paddingVertical: 10, paddingHorizontal: 12 }}>
+      <Text style={{ color: tone === 'bad' ? t.bad : t.ink, fontSize: 13, lineHeight: 19 }}>{children}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  chip: { borderWidth: 1, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 6 },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: 5, borderWidth: 1, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 7 },
   badge: { fontSize: 11, fontWeight: '700', borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2, overflow: 'hidden' },
   ai: { fontSize: 10, fontWeight: '700', borderWidth: 1, borderStyle: 'dashed', borderRadius: 4, paddingHorizontal: 4 },
-  btn: { borderRadius: 999, paddingVertical: 13, paddingHorizontal: 18, alignItems: 'center' },
-  box: { borderRadius: radius, borderWidth: 1, padding: 14, gap: 12 },
+  btn: { borderRadius: 12, paddingVertical: 14, paddingHorizontal: 18, alignItems: 'center' },
+  box: { borderTopWidth: 1, paddingTop: 18, paddingBottom: 6, gap: 12 },
 });

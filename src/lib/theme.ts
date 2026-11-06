@@ -1,13 +1,13 @@
 import { useColorScheme } from 'react-native';
 
 const light = {
-  bg: '#f6f4f2',
+  bg: '#ffffff',
   surface: '#ffffff',
-  surface2: '#efebe7',
-  ink: '#1d1a1f',
-  muted: '#6c6570',
-  line: '#e3ddd8',
-  ember: '#e8501f',
+  surface2: '#f3f1ee',
+  ink: '#161412',
+  muted: '#77706a',
+  line: '#ebe7e2',
+  ember: '#e04e1b',
   emberInk: '#ffffff',
   emberSoft: '#fde6dc',
   night: '#2b2140',
@@ -20,12 +20,12 @@ const light = {
 };
 
 const dark: typeof light = {
-  bg: '#141116',
-  surface: '#1e1a21',
-  surface2: '#29232d',
-  ink: '#f3eef2',
-  muted: '#a79fab',
-  line: '#352e3a',
+  bg: '#121110',
+  surface: '#121110',
+  surface2: '#1f1d1b',
+  ink: '#f4f1ed',
+  muted: '#a19a93',
+  line: '#2a2725',
   ember: '#ff6a3a',
   emberInk: '#1a0d07',
   emberSoft: '#3b2118',
@@ -44,6 +44,13 @@ export function useTheme(): Palette {
   return useColorScheme() === 'dark' ? dark : light;
 }
 
-export const radius = 14;
+export const radius = 12;
 
-export const tints = ['#fde6dc', '#e3ecfb', '#e6f4ea', '#f6e7fb', '#fff2cc', '#e2f3f5', '#f2e8df'];
+/** Tipografía de titulares y precios. En web cae a la fuente del sistema mientras carga. */
+export const font = {
+  display: 'BricolageGrotesque_700Bold',
+  heavy: 'BricolageGrotesque_800ExtraBold',
+  medium: 'BricolageGrotesque_600SemiBold',
+};
+
+export const tints = ['#f1eee9', '#eceae6', '#efebe4', '#ebe9e5', '#f0ece6', '#e9e8e4', '#eeeae4'];

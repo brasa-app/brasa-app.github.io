@@ -28,17 +28,17 @@ export function searchUrl(p: PlatformId, q: string): string {
   }
 }
 
-export const CATEGORIES: Record<CategoryId, { name: string; emoji: string }> = {
-  moviles: { name: 'Móviles', emoji: '📱' },
-  consolas: { name: 'Videojuegos', emoji: '🎮' },
-  moda: { name: 'Moda', emoji: '👟' },
-  motor: { name: 'Coches', emoji: '🚗' },
-  motos: { name: 'Motos', emoji: '🏍️' },
-  bici: { name: 'Bicis y patinetes', emoji: '🚲' },
-  hogar: { name: 'Hogar', emoji: '🛋️' },
-  foto: { name: 'Fotografía', emoji: '📷' },
-  info: { name: 'Informática', emoji: '💻' },
-  colec: { name: 'Coleccionismo', emoji: '🃏' },
+export const CATEGORIES: Record<CategoryId, { name: string; emoji: string; icon: string }> = {
+  moviles: { name: 'Móviles', emoji: '📱', icon: 'phone-portrait-outline' },
+  consolas: { name: 'Videojuegos', emoji: '🎮', icon: 'game-controller-outline' },
+  moda: { name: 'Moda', emoji: '👟', icon: 'shirt-outline' },
+  motor: { name: 'Coches', emoji: '🚗', icon: 'car-sport-outline' },
+  motos: { name: 'Motos', emoji: '🏍️', icon: 'speedometer-outline' },
+  bici: { name: 'Bicis y patinetes', emoji: '🚲', icon: 'bicycle-outline' },
+  hogar: { name: 'Hogar', emoji: '🛋️', icon: 'home-outline' },
+  foto: { name: 'Fotografía', emoji: '📷', icon: 'camera-outline' },
+  info: { name: 'Informática', emoji: '💻', icon: 'laptop-outline' },
+  colec: { name: 'Coleccionismo', emoji: '🃏', icon: 'albums-outline' },
 };
 
 /** Plataformas donde más se vende cada categoría en España, por orden. */

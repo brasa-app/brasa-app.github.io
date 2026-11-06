@@ -28,7 +28,7 @@ export function SearchHeader({
 
   return (
     <View style={{ gap: 14 }}>
-      <View style={[styles.search, { backgroundColor: t.surface, borderColor: t.line }]}>
+      <View style={[styles.search, { backgroundColor: t.surface2 }]}>
         <Ionicons name="search" size={20} color={t.muted} />
         <TextInput
           value={query}
@@ -44,21 +44,21 @@ export function SearchHeader({
           onPress={() => router.push('/filters')}
           accessibilityRole="button"
           accessibilityLabel="Filtros"
-          style={[styles.filterBtn, { backgroundColor: n ? t.ember : t.surface2 }]}>
-          <Ionicons name="options-outline" size={18} color={n ? t.emberInk : t.ink} />
-          {n > 0 && <Text style={{ color: t.emberInk, fontWeight: '800', fontSize: 12 }}>{n}</Text>}
+          style={[styles.filterBtn, { backgroundColor: n ? t.ink : t.bg }]}>
+          <Ionicons name="options-outline" size={18} color={n ? t.bg : t.ink} />
+          {n > 0 && <Text style={{ color: t.bg, fontWeight: '800', fontSize: 12 }}>{n}</Text>}
         </Pressable>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 14, paddingRight: 8 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingRight: 8 }}>
         {(Object.keys(CATEGORIES) as CategoryId[]).map((k) => {
           const on = filters.category === k;
           return (
-            <Pressable key={k} onPress={() => setCat(k)} accessibilityRole="button" accessibilityState={{ selected: on }} style={{ alignItems: 'center', gap: 6, width: 64 }}>
-              <View style={[styles.catIcon, { backgroundColor: on ? t.ember : t.surface, borderColor: on ? t.ember : t.line }]}>
-                <Text style={{ fontSize: 24 }}>{CATEGORIES[k].emoji}</Text>
+            <Pressable key={k} onPress={() => setCat(k)} accessibilityRole="button" accessibilityState={{ selected: on }} style={{ alignItems: 'center', gap: 6, width: 62 }}>
+              <View style={[styles.catIcon, { backgroundColor: on ? t.ink : t.surface2 }]}>
+                <Ionicons name={CATEGORIES[k].icon as never} size={24} color={on ? t.bg : t.ink} />
               </View>
-              <Text numberOfLines={1} style={{ color: on ? t.ember : t.ink, fontSize: 11.5, fontWeight: on ? '700' : '500' }}>
+              <Text numberOfLines={1} style={{ color: t.ink, fontSize: 11.5, fontWeight: on ? '700' : '500' }}>
                 {CATEGORIES[k].name.split(' ')[0]}
               </Text>
             </Pressable>
@@ -67,17 +67,17 @@ export function SearchHeader({
       </ScrollView>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 6 }}>
-        <Chip label="📍 Cerca de mí" active={near} onPress={() => setFilters({ ...filters, nationwide: near, radiusKm: filters.radiusKm || 50 })} />
-        <Chip label="📦 Con envío" active={filters.delivery === 'shipping'} onPress={() => setFilters({ ...filters, delivery: filters.delivery === 'shipping' ? 'any' : 'shipping' })} />
-        <Chip label="🤝 En mano" active={filters.delivery === 'inPerson'} onPress={() => setFilters({ ...filters, delivery: filters.delivery === 'inPerson' ? 'any' : 'inPerson' })} />
-        <Chip label="✨ Como nuevo" active={filters.conditions.length === 1 && filters.conditions[0] === 'mb'} onPress={() => setFilters({ ...filters, conditions: filters.conditions[0] === 'mb' && filters.conditions.length === 1 ? [] : ['mb'] })} />
+        <Chip icon="location-outline" label="Cerca de mí" active={near} onPress={() => setFilters({ ...filters, nationwide: near, radiusKm: filters.radiusKm || 50 })} />
+        <Chip icon="cube-outline" label="Con envío" active={filters.delivery === 'shipping'} onPress={() => setFilters({ ...filters, delivery: filters.delivery === 'shipping' ? 'any' : 'shipping' })} />
+        <Chip icon="hand-left-outline" label="En mano" active={filters.delivery === 'inPerson'} onPress={() => setFilters({ ...filters, delivery: filters.delivery === 'inPerson' ? 'any' : 'inPerson' })} />
+        <Chip icon="sparkles-outline" label="Como nuevo" active={filters.conditions.length === 1 && filters.conditions[0] === 'mb'} onPress={() => setFilters({ ...filters, conditions: filters.conditions[0] === 'mb' && filters.conditions.length === 1 ? [] : ['mb'] })} />
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  search: { flexDirection: 'row', alignItems: 'center', gap: 10, borderRadius: 999, paddingLeft: 16, paddingRight: 6, borderWidth: 1 },
-  filterBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, borderRadius: 999, paddingHorizontal: 12, paddingVertical: 9 },
-  catIcon: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center', borderWidth: 1 },
+  search: { flexDirection: 'row', alignItems: 'center', gap: 10, borderRadius: 12, paddingLeft: 14, paddingRight: 6 },
+  filterBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, borderRadius: 9, paddingHorizontal: 12, paddingVertical: 9 },
+  catIcon: { width: 54, height: 54, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
 });

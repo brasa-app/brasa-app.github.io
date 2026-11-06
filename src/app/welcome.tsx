@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
@@ -8,11 +9,11 @@ import { useStore } from '@/lib/store';
 import { useTheme } from '@/lib/theme';
 
 const CITIES = ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Zaragoza', 'Málaga', 'Bilbao', 'Murcia', 'Palma', 'Otra'];
-const POINTS: [string, string, string][] = [
-  ['🔥', 'Chollos de todas las webs', 'Wallapop, Vinted, Milanuncios, eBay y más en un solo sitio.'],
-  ['🛡', 'Sin estafas', 'Comprobamos al vendedor y ocultamos los anuncios sospechosos.'],
-  ['⭐', 'Lo mejor por tu dinero', 'Te enseñamos el más barato y el de mejor estado/precio.'],
-  ['🚀', 'Vende en todas a la vez', 'Sube tu producto una vez y publícalo en las webs que más venden.'],
+const POINTS: [React.ComponentProps<typeof Ionicons>['name'], string, string][] = [
+  ['albums-outline', 'Chollos de todas las webs', 'Wallapop, Vinted, Milanuncios, eBay y más en un solo sitio.'],
+  ['shield-checkmark-outline', 'Sin estafas', 'Comprobamos al vendedor y ocultamos los anuncios sospechosos.'],
+  ['pricetag-outline', 'Lo mejor por tu dinero', 'Te enseñamos el más barato y el de mejor estado/precio.'],
+  ['paper-plane-outline', 'Vende en todas a la vez', 'Sube tu producto una vez y publícalo en las webs que más venden.'],
 ];
 
 export default function Welcome() {
@@ -22,17 +23,15 @@ export default function Welcome() {
 
   return (
     <ScrollView contentContainerStyle={{ padding: 22, gap: 22, maxWidth: 520, width: '100%', alignSelf: 'center' }}>
-      <View style={{ alignItems: 'center', gap: 10, marginTop: 10 }}>
-        <BrasaMark size={64} />
-        <Title size={30}>Bienvenido a Brasa</Title>
-        <Sub>La forma más rápida de comprar y vender de segunda mano.</Sub>
+      <View style={{ gap: 14, marginTop: 24 }}>
+        <BrasaMark size={44} />
+        <Title size={34}>Toda la segunda mano, en un solo sitio.</Title>
+        <Text style={{ color: t.muted, fontSize: 15, lineHeight: 21 }}>Busca una vez y compara Wallapop, Vinted, Milanuncios y más. La compra se hace siempre en la web del anuncio.</Text>
       </View>
-      <View style={{ gap: 14 }}>
+      <View style={{ borderTopWidth: 1, borderColor: t.line }}>
         {POINTS.map(([e, h, d]) => (
-          <View key={h} style={{ flexDirection: 'row', gap: 14, alignItems: 'center' }}>
-            <View style={{ width: 46, height: 46, borderRadius: 14, backgroundColor: t.emberSoft, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 22 }}>{e}</Text>
-            </View>
+          <View key={h} style={{ flexDirection: 'row', gap: 14, alignItems: 'flex-start', paddingVertical: 14, borderBottomWidth: 1, borderColor: t.line }}>
+            <Ionicons name={e} size={22} color={t.ink} style={{ marginTop: 1 }} />
             <View style={{ flex: 1 }}>
               <Text style={{ color: t.ink, fontWeight: '700', fontSize: 15 }}>{h}</Text>
               <Sub>{d}</Sub>

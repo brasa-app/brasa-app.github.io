@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { useTheme } from '@/lib/theme';
+import { font, useTheme } from '@/lib/theme';
 
 /** Brasa: una gota de fuego (llama exterior naranja, núcleo amarillo) + el nombre en minúsculas muy gruesas. */
 export function BrasaMark({ size = 28 }: { size?: number }) {
@@ -19,8 +19,8 @@ export function BrasaLogo({ size = 26 }: { size?: number }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }} accessibilityRole="header" accessibilityLabel="Brasa">
       <BrasaMark size={size * 1.05} />
-      <Text style={{ fontSize: size, fontWeight: '900', letterSpacing: -size * 0.05, color: t.ink, includeFontPadding: false }}>
-        Bras<Text style={{ color: t.ember }}>a</Text>
+      <Text style={{ fontSize: size, fontFamily: font.heavy, fontWeight: '800', letterSpacing: -size * 0.04, color: t.ink, includeFontPadding: false }}>
+        Brasa
       </Text>
     </View>
   );

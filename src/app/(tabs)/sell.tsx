@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
@@ -83,7 +84,7 @@ export default function Sell() {
           <Box key={p}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <Text style={{ color: t.ink, fontWeight: '700', fontSize: 16 }}>{PLATFORMS[p].name}</Text>
-              <Text style={{ color: done.includes(p) ? t.ok : t.muted, fontWeight: '600' }}>{done.includes(p) ? '✓ Hecho' : 'Pendiente'}</Text>
+              <Text style={{ color: done.includes(p) ? t.ok : t.muted, fontWeight: '600' }}>{done.includes(p) ? 'Hecho' : 'Pendiente'}</Text>
             </View>
             <Text style={{ color: t.muted, fontSize: 13 }} numberOfLines={4}>
               {adaptText(p, data)}
@@ -92,7 +93,7 @@ export default function Sell() {
               <Button
                 style={{ flex: 1 }}
                 variant="ghost"
-                label={copied === p ? 'Copiado ✓' : 'Copiar texto'}
+                label={copied === p ? 'Copiado' : 'Copiar texto'}
                 onPress={async () => (await copyText(adaptText(p, data))) && setCopied(p)}
               />
               <Button
@@ -127,23 +128,23 @@ export default function Sell() {
               onPress={addPhotos}
               accessibilityRole="button"
               accessibilityLabel="Añadir fotos"
-              style={{ width: 96, height: 96, borderRadius: 14, borderWidth: 2, borderStyle: 'dashed', borderColor: t.ember, backgroundColor: t.emberSoft, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ color: t.ember, fontSize: 28, fontWeight: '800' }}>＋</Text>
-              <Text style={{ color: t.ember, fontSize: 11, fontWeight: '700' }}>Añadir fotos</Text>
+              style={{ width: 96, height: 96, borderRadius: 12, borderWidth: 1.5, borderStyle: 'dashed', borderColor: t.muted, backgroundColor: t.surface2, alignItems: 'center', justifyContent: 'center' }}>
+              <Ionicons name="camera-outline" size={26} color={t.ink} />
+              <Text style={{ color: t.ink, fontSize: 11, fontWeight: '600', marginTop: 4 }}>Añadir fotos</Text>
             </Pressable>
           )}
         </View>
-        {analyzing && <Note>🤖 Analizando las fotos para estimar el estado…</Note>}
+        {analyzing && <Note>Analizando las fotos para estimar el estado…</Note>}
         {ai && !analyzing && (
           <Note>
-            🤖 Estado estimado por IA: {CONDITIONS[ai.condition].label} ({ai.confidence} % de confianza). {ai.reason}
+            Estado estimado por IA: {CONDITIONS[ai.condition].label} ({ai.confidence} % de confianza). {ai.reason}
           </Note>
         )}
 
         <Text style={label}>¿Qué quieres vender?</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
           {(Object.keys(CATEGORIES) as CategoryId[]).map((k) => (
-            <Chip key={k} label={`${CATEGORIES[k].emoji} ${CATEGORIES[k].name}`} active={cat === k} onPress={() => setCat(k)} />
+            <Chip key={k} icon={CATEGORIES[k].icon as never} label={CATEGORIES[k].name} active={cat === k} onPress={() => setCat(k)} />
           ))}
         </View>
 
@@ -161,7 +162,7 @@ export default function Sell() {
         <TextInput value={price} onChangeText={(v) => setPrice(v.replace(/\D/g, ''))} placeholder="€" placeholderTextColor={t.muted} keyboardType="numeric" style={input} />
         {suggested != null && (
           <Pressable onPress={() => setPrice(String(suggested))}>
-            <Note>💡 Anuncios parecidos se venden por unos {euros(suggested)}. Toca para usar este precio.</Note>
+            <Note>Anuncios parecidos se venden por unos {euros(suggested)}. Toca para usar este precio.</Note>
           </Pressable>
         )}
 

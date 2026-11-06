@@ -48,7 +48,7 @@ export default function CheckListing() {
         Haz una captura de pantalla de cualquier anuncio (Wallapop, Vinted, Milanuncios…) y súbela. La IA lee el precio, el
         vendedor y las señales de estafa.
       </Sub>
-      <Button label={uri ? 'Subir otra captura' : '📸 Subir captura'} onPress={pick} />
+      <Button label={uri ? 'Subir otra captura' : 'Subir captura'} onPress={pick} />
       {uri && <Image source={uri} style={{ width: '100%', aspectRatio: 9 / 12, borderRadius: 14, maxWidth: 360, alignSelf: 'center' }} contentFit="contain" />}
       {loading && (
         <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>

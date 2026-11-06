@@ -9,7 +9,7 @@ import { PLATFORMS, euros } from '@/lib/platforms';
 import { bestPicks, passesFilters, trustScore } from '@/lib/scoring';
 import { searchAll } from '@/lib/sources';
 import { useStore } from '@/lib/store';
-import { useTheme } from '@/lib/theme';
+import { font, useTheme } from '@/lib/theme';
 import type { Listing } from '@/lib/types';
 import { router } from 'expo-router';
 
@@ -21,9 +21,9 @@ function PickCard({ l, label, color }: { l?: Listing; label: string; color: stri
   return (
     <Pressable
       onPress={() => router.push({ pathname: '/listing/[id]', params: { id: l.id } })}
-      style={{ flex: 1, borderWidth: 2, borderColor: color, borderRadius: 14, padding: 12, gap: 5, backgroundColor: t.surface }}>
+      style={{ flex: 1, borderRadius: 12, padding: 12, gap: 5, backgroundColor: t.surface2, borderTopWidth: 3, borderTopColor: color }}>
       <Text style={{ color, fontSize: 11, fontWeight: '800', letterSpacing: 0.6 }}>{label.toUpperCase()}</Text>
-      <Text style={{ color: t.ink, fontSize: 20, fontWeight: '800' }}>{euros(l.price)}</Text>
+      <Text style={{ color: t.ink, fontSize: 22, fontFamily: font.heavy, fontWeight: '800' }}>{euros(l.price)}</Text>
       <Text numberOfLines={1} style={{ color: t.ink }}>{l.title}</Text>
       <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
         <ConditionBadge condition={l.condition} byAI={l.conditionByAI} />
@@ -93,7 +93,7 @@ export default function Search() {
               <Text style={{ color: t.ink, fontWeight: '600' }}>Tus alertas</Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
                 {savedSearches.map((s) => (
-                  <Chip key={s.query} label={`🔔 ${s.query}`} onPress={() => setQuery(s.query)} />
+                  <Chip key={s.query} icon="notifications-outline" label={s.query} onPress={() => setQuery(s.query)} />
                 ))}
               </View>
             </Box>
@@ -111,12 +111,12 @@ export default function Search() {
                 {visible[0] ? ` · precio de mercado ${euros(visible[0].marketPrice)}` : ''}
               </Sub>
             </View>
-            <Chip label={saved ? '🔔 Alerta creada' : '🔔 Crear alerta'} active={saved} onPress={() => saveSearch({ query: submitted })} />
+            <Chip icon={saved ? 'notifications' : 'notifications-outline'} label={saved ? 'Alerta creada' : 'Crear alerta'} active={saved} onPress={() => saveSearch({ query: submitted })} />
           </View>
           {visible.length > 0 && (
             <View style={{ flexDirection: 'row', gap: 10 }}>
-              <PickCard l={cheapest} label="🔥 Más barato fiable" color={t.ember} />
-              <PickCard l={bestValue} label="⭐ Mejor estado/precio" color={t.ok} />
+              <PickCard l={cheapest} label="Más barato fiable" color={t.ember} />
+              <PickCard l={bestValue} label="Mejor estado/precio" color={t.ok} />
             </View>
           )}
           {visible.length > 0 && <Text style={{ color: t.ink, fontWeight: '600' }}>Todos, del más barato al más caro</Text>}

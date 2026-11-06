@@ -4,7 +4,7 @@ import { Tabs } from 'expo-router/tabs';
 import { Pressable, View, type ColorValue } from 'react-native';
 
 import { BrasaLogo } from '@/components/brasa-logo';
-import { useTheme } from '@/lib/theme';
+import { font, useTheme } from '@/lib/theme';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 const icon =
@@ -18,13 +18,13 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: t.ember,
+        tabBarActiveTintColor: t.ink,
         tabBarInactiveTintColor: t.muted,
-        tabBarStyle: { backgroundColor: t.surface, borderTopColor: t.line, height: 64, paddingTop: 6 },
+        tabBarStyle: { backgroundColor: t.bg, borderTopColor: t.line, height: 64, paddingTop: 6 },
         tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
-        headerStyle: { backgroundColor: t.surface },
+        headerStyle: { backgroundColor: t.bg },
         headerShadowVisible: false,
-        headerTitleStyle: { color: t.ink, fontWeight: '800', fontSize: 20 },
+        headerTitleStyle: { color: t.ink, fontFamily: font.heavy, fontWeight: '800', fontSize: 22 },
         headerTitleAlign: 'left',
       }}>
       <Tabs.Screen
@@ -34,7 +34,7 @@ export default function TabsLayout() {
           headerTitle: () => <BrasaLogo />,
           headerRight: () => (
             <Pressable onPress={() => router.push('/favorites')} accessibilityLabel="Favoritos y alertas" style={{ paddingHorizontal: 16 }}>
-              <Ionicons name="notifications-outline" size={24} color={t.ink} />
+              <Ionicons name="heart-outline" size={24} color={t.ink} />
             </Pressable>
           ),
           tabBarIcon: icon('flame', 'flame-outline'),
@@ -46,14 +46,14 @@ export default function TabsLayout() {
           title: 'Vender',
           headerTitle: 'Subir producto',
           tabBarIcon: () => (
-            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: t.ember, alignItems: 'center', justifyContent: 'center', marginTop: -4 }}>
-              <Ionicons name="add" size={28} color={t.emberInk} />
+            <View style={{ width: 44, height: 32, borderRadius: 10, backgroundColor: t.ember, alignItems: 'center', justifyContent: 'center', marginTop: -4 }}>
+              <Ionicons name="add" size={24} color="#fff" />
             </View>
           ),
         }}
       />
       <Tabs.Screen name="search" options={{ title: 'Buscador', tabBarIcon: icon('search', 'search-outline') }} />
-      <Tabs.Screen name="profile" options={{ title: 'Mi perfil', tabBarIcon: icon('person-circle', 'person-circle-outline') }} />
+      <Tabs.Screen name="profile" options={{ title: 'Mi perfil', tabBarIcon: icon('person', 'person-outline') }} />
     </Tabs>
   );
 }

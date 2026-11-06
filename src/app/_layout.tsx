@@ -1,19 +1,21 @@
+import { BricolageGrotesque_600SemiBold, BricolageGrotesque_700Bold, BricolageGrotesque_800ExtraBold, useFonts } from '@expo-google-fonts/bricolage-grotesque';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 
 import { StoreProvider } from '@/lib/store';
-import { useTheme } from '@/lib/theme';
+import { font, useTheme } from '@/lib/theme';
 
 export default function RootLayout() {
   const scheme = useColorScheme();
   const t = useTheme();
+  useFonts({ BricolageGrotesque_600SemiBold, BricolageGrotesque_700Bold, BricolageGrotesque_800ExtraBold });
   const base = scheme === 'dark' ? DarkTheme : DefaultTheme;
   return (
     <StoreProvider>
       <ThemeProvider value={{ ...base, colors: { ...base.colors, background: t.bg, card: t.surface, primary: t.ember, text: t.ink, border: t.line } }}>
         <StatusBar style="auto" />
-        <Stack screenOptions={{ headerTintColor: t.ink }}>
+        <Stack screenOptions={{ headerTintColor: t.ink, headerShadowVisible: false, headerStyle: { backgroundColor: t.bg }, headerTitleStyle: { fontFamily: font.display, fontSize: 18 }, headerBackButtonDisplayMode: 'minimal' }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="listing/[id]" options={{ title: 'Anuncio', presentation: 'modal' }} />
           <Stack.Screen name="filters" options={{ title: 'Filtros', presentation: 'modal' }} />

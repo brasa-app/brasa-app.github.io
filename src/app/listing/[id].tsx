@@ -66,7 +66,7 @@ export default function ListingDetail() {
 
       {l.conditionByAI && (
         <Note>
-          🤖 El vendedor no indicó el estado. Nuestra IA lo estima como {CONDITIONS[l.condition].label.toLowerCase()} a partir de
+          El vendedor no indicó el estado. Nuestra IA lo estima como {CONDITIONS[l.condition].label.toLowerCase()} a partir de
           las fotos (marcas visibles, desgaste y accesorios).
         </Note>
       )}
@@ -116,7 +116,7 @@ export default function ListingDetail() {
         <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 6, height: 110 }}>
           {history.map((h, i) => (
             <View key={h.week} style={{ flex: 1, alignItems: 'center', gap: 4, justifyContent: 'flex-end', height: '100%' }}>
-              <View style={{ width: '100%', borderRadius: 4, backgroundColor: i === history.length - 1 ? t.ember : t.surface2, height: `${Math.max(8, ((h.price - hMin) / (hMax - hMin || 1)) * 70 + 20)}%` }} />
+              <View style={{ width: '100%', borderRadius: 3, backgroundColor: i === history.length - 1 ? t.ember : t.line, height: `${Math.max(8, ((h.price - hMin) / (hMax - hMin || 1)) * 70 + 20)}%` }} />
               <Text style={{ color: t.muted, fontSize: 9 }}>{h.week}</Text>
             </View>
           ))}
@@ -129,7 +129,7 @@ export default function ListingDetail() {
       </Box>
 
       <View style={{ flexDirection: 'row', gap: 10 }}>
-        <Button style={{ flex: 1 }} variant="ghost" label={fav ? '♥ En favoritos' : '♡ Favorito'} onPress={() => toggleFavorite(l)} />
+        <Button style={{ flex: 1 }} variant="ghost" label={fav ? 'En favoritos' : 'Guardar'} onPress={() => toggleFavorite(l)} />
         <Button
           style={{ flex: 1 }}
           variant="ghost"
@@ -142,7 +142,7 @@ export default function ListingDetail() {
           <Sub>Gracias. Hemos recibido tu denuncia y ya no verás este anuncio.</Sub>
         ) : !reporting ? (
           <View style={{ flexDirection: 'row', gap: 10 }}>
-            <Button style={{ flex: 1 }} variant="ghost" label="🚩 Denunciar" onPress={() => setReporting(true)} />
+            <Button style={{ flex: 1 }} variant="ghost" label="Denunciar" onPress={() => setReporting(true)} />
             <Button
               style={{ flex: 1 }}
               variant="ghost"

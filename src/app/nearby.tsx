@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -36,7 +37,7 @@ export default function Nearby() {
           const a = (i * 137.5 * Math.PI) / 180;
           return <View key={l.id} style={{ position: 'absolute', width: 10, height: 10, borderRadius: 5, backgroundColor: t.ember, transform: [{ translateX: Math.cos(a) * r }, { translateY: Math.sin(a) * r }] }} />;
         })}
-        <Text style={{ fontSize: 18 }}>📍</Text>
+        <Ionicons name="location-outline" size={18} color={t.ink} />
       </View>
       {RINGS.map((ring, i) => {
         const min = i ? RINGS[i - 1].max : 0;

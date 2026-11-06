@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { FlatList, Pressable, Text, View } from 'react-native';
 
@@ -21,7 +22,7 @@ export default function Favorites() {
       ListHeaderComponent={
         <View style={{ gap: 14, marginBottom: 4 }}>
           <Box>
-            <Text style={{ color: t.ink, fontWeight: '700', fontSize: 16 }}>🔔 Alertas</Text>
+            <Text style={{ color: t.ink, fontWeight: '700', fontSize: 16 }}>Alertas</Text>
             {savedSearches.length ? (
               savedSearches.map((s) => (
                 <View key={s.query} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -37,12 +38,12 @@ export default function Favorites() {
               <Sub>Busca algo y pulsa "Crear alerta" para que te avisemos cuando salga un chollo.</Sub>
             )}
           </Box>
-          <Title size={20}>♥ Favoritos</Title>
+          <Title size={20}>Favoritos</Title>
         </View>
       }
       ListEmptyComponent={
         <View style={{ alignItems: 'center', gap: 10, padding: 24 }}>
-          <Text style={{ fontSize: 40 }}>🤍</Text>
+          <Ionicons name="heart-outline" size={36} color={t.muted} />
           <Sub>Toca el corazón de cualquier anuncio para guardarlo aquí.</Sub>
           <Button label="Ver ofertas" variant="ghost" onPress={() => router.navigate('/')} />
         </View>

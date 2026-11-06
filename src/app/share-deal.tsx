@@ -63,7 +63,7 @@ export default function ShareDeal() {
         style={input}
       />
       {url.length > 5 && !validUrl && <Sub>Pega el enlace completo, empezando por https://</Sub>}
-      {validUrl && !known && <Sub>⚠️ Este enlace no es de una plataforma conocida. Asegúrate de que es seguro.</Sub>}
+      {validUrl && !known && <Sub>Ojo: este enlace no es de una plataforma conocida. Asegúrate de que es seguro.</Sub>}
       <Text style={label}>Foto</Text>
       <Pressable onPress={pickPhoto} accessibilityRole="button" accessibilityLabel="Añadir foto"
         style={{ width: 110, height: 110, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: t.muted, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
@@ -80,7 +80,7 @@ export default function ShareDeal() {
       <Text style={label}>Categoría</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
         {(Object.keys(CATEGORIES) as CategoryId[]).map((c) => (
-          <Chip key={c} label={`${CATEGORIES[c].emoji} ${CATEGORIES[c].name}`} active={category === c} onPress={() => setCategory(c)} />
+          <Chip key={c} icon={CATEGORIES[c].icon as never} label={CATEGORIES[c].name} active={category === c} onPress={() => setCategory(c)} />
         ))}
       </View>
       <Button
@@ -91,7 +91,7 @@ export default function ShareDeal() {
           router.back();
         }}
       />
-      <Sub>Comparte solo anuncios reales. Los chollos con muchos votos ❄️ o denuncias se retiran.</Sub>
+      <Sub>Comparte solo anuncios reales. Los chollos con muchos votos negativos o denuncias se retiran.</Sub>
     </ScrollView>
   );
 }
